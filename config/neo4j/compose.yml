@@ -1,0 +1,20 @@
+services:
+  neo4j:
+    # Używamy najnowszego stabilnego tagu (5.26.14)
+    image: neo4j:5.26.14 
+    container_name: neo4j
+    ports:
+      - "7474:7474" # Interfejs WWW/HTTP
+      - "7687:7687" # Protokół Bolt
+    volumes:
+      # Mapuje nazwany wolumen na ścieżkę danych w kontenerze.
+      # Dane będą przechowywane w systemowym wolumenie Dockera.
+      - neo4j_data:/data 
+    environment:
+      # WAŻNE: Wymagane do ustawienia hasła przy pierwszym uruchomieniu
+      NEO4J_AUTH: neo4j/grap#_d4t4
+
+# Definicja nazwanego wolumenu
+volumes:
+  neo4j_data:
+    # Docker zarządza tym wolumenem

@@ -1,0 +1,15 @@
+services:
+  mongodb:
+    image: mongo:8.0.15
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: admin
+volumes:
+  mongodb_data:
+    driver: local 

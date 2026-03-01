@@ -1,0 +1,39 @@
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.2.0 
+    container_name: elasticsearch
+    environment:
+      # Ustawienia wymagane do uruchomienia pojedynczego węzła
+      - xpack.security.enabled=false # Wyłączamy bezpieczeństwo X-Pack dla uproszczenia warsztatów
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m # Ograniczenie zużycia pamięci Java (ważne dla środowisk lokalnych/warsztatowych)
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data # Persystencja danych
+    ports:
+      - 9200:9200 # Standardowy port HTTP
+    networks:
+      - elastic-network
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.2.0 
+    container_name: kibana
+    environment:
+      # Adres Elasticsearch, do którego Kibana ma się podłączyć
+      - ELASTICSEARCH_HOSTS=["http://elasticsearch:9200"]
+    ports:
+      - 5601:5601 # Standardowy port Kibany
+    depends_on:
+      - elasticsearch # Kibana czeka na Elasticsearch
+    networks:
+      - elastic-network
+
+volumes:
+  elasticsearch-data: # Definicja wolumenu dla danych Elasticsearch
+
+networks:
+  elastic-network:
+    driver: bridge

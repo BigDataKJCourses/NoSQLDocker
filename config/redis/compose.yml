@@ -1,0 +1,29 @@
+services:
+  # SERWIS 1: Redis Stack (Baza Danych)
+  redis-stack:
+    image: redis/redis-stack:7.4.0-v7 
+    container_name: redis-stack
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    volumes:
+      - redis_data:/data # Wolumen dla trwałości danych Redis
+
+  # SERWIS 2: Node.js (Środowisko developerskie i serwer webowy)
+  node-dev:
+    image: node:25 
+    container_name: node-dev
+    stdin_open: true 
+    tty: true        
+    ports:
+      - "3000:3000" 
+    volumes:
+      - ${HOME}/Docker/Node/projects:/projects
+    user: "${UID}:${GID}"
+    
+    depends_on:
+      - redis-stack
+
+volumes:
+  redis_data:
+    driver: local

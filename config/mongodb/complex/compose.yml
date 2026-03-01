@@ -1,0 +1,144 @@
+services:
+  # ----------------------------------------
+  # A. Zestaw Serwerów Konfiguracji (ConfServRS)
+  # ----------------------------------------
+  mongo_config_s1:
+    image: mongo:8.0.15
+    container_name: mongo_config_s1
+    command: mongod --configsvr --replSet confServRS --dbpath /data/db --port 27019 --bind_ip_all
+    volumes:
+      - config1_data:/data/db
+    expose:
+      - 27019
+    networks:
+      - mongo-shard-net
+
+  mongo_config_s2:
+    image: mongo:8.0.15
+    container_name: mongo_config_s2
+    command: mongod --configsvr --replSet confServRS --dbpath /data/db --port 27019 --bind_ip_all
+    volumes:
+      - config2_data:/data/db
+    expose:
+      - 27019
+    networks:
+      - mongo-shard-net
+
+  mongo_config_s3:
+    image: mongo:8.0.15
+    container_name: mongo_config_s3
+    command: mongod --configsvr --replSet confServRS --dbpath /data/db --port 27019 --bind_ip_all
+    volumes:
+      - config3_data:/data/db
+    expose:
+      - 27019
+    networks:
+      - mongo-shard-net
+
+  # ----------------------------------------
+  # B. Shard 1 (repl1-3)
+  # ----------------------------------------
+  mongo_shard1_r1:
+    image: mongo:8.0.15
+    container_name: mongo_shard1_r1
+    command: mongod --shardsvr --replSet repl1-3 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard1_r1_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  mongo_shard1_r2:
+    image: mongo:8.0.15
+    container_name: mongo_shard1_r2
+    command: mongod --shardsvr --replSet repl1-3 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard1_r2_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  mongo_shard1_r3:
+    image: mongo:8.0.15
+    container_name: mongo_shard1_r3
+    command: mongod --shardsvr --replSet repl1-3 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard1_r3_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  # ----------------------------------------
+  # C. Shard 2 (repl4-6)
+  # ----------------------------------------
+  mongo_shard2_r1:
+    image: mongo:8.0.15
+    container_name: mongo_shard2_r1
+    command: mongod --shardsvr --replSet repl4-6 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard2_r1_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  mongo_shard2_r2:
+    image: mongo:8.0.15
+    container_name: mongo_shard2_r2
+    command: mongod --shardsvr --replSet repl4-6 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard2_r2_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  mongo_shard2_r3:
+    image: mongo:8.0.15
+    container_name: mongo_shard2_r3
+    command: mongod --shardsvr --replSet repl4-6 --dbpath /data/db --port 27017 --bind_ip_all
+    volumes:
+      - shard2_r3_data:/data/db
+    expose:
+      - 27017
+    networks:
+      - mongo-shard-net
+
+  # ----------------------------------------
+  # D. Router (mongos) - Klient 
+  # ----------------------------------------
+  mongos_router:
+    image: mongo:8.0.15
+    container_name: mongos_router
+    # Port 27017 jest mapowany na zewnątrz, aby klient mógł się podłączyć
+    ports:
+      - "27017:27017"
+    # Adresy serwerów konfiguracyjnych
+    command: mongos --configdb confServRS/mongo_config_s1:27019,mongo_config_s2:27019,mongo_config_s3:27019 --bind_ip_all
+    depends_on:
+      - mongo_config_s1
+      - mongo_config_s2
+      - mongo_config_s3
+    networks:
+      - mongo-shard-net
+
+# ----------------------------------------
+# E. Definicje Wolumenów i Sieci
+# ----------------------------------------
+volumes:
+  config1_data:
+  config2_data:
+  config3_data:
+  shard1_r1_data:
+  shard1_r2_data:
+  shard1_r3_data:
+  shard2_r1_data:
+  shard2_r2_data:
+  shard2_r3_data:
+
+networks:
+  mongo-shard-net:
+    driver: bridge

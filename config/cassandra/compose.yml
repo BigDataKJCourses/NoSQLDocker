@@ -1,0 +1,26 @@
+services:
+  cassandra:
+    image: cassandra:5.0.5 
+    container_name: apache-cassandra
+    restart: unless-stopped 
+    ports:
+      - "9042:9042" 
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+
+  # SERWIS 2: Node.js (Środowisko developerskie i serwer webowy)
+  node-dev:
+    image: node:25 
+    container_name: node-dev
+    stdin_open: true 
+    tty: true        
+    ports:
+      - "3000:3000" 
+    volumes:
+      - ${HOME}/Docker/Node/projects:/projects
+    user: "${UID}:${GID}"
+    depends_on:
+      - cassandra
+      
+volumes:
+  cassandra-data:
