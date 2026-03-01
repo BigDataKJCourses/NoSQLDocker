@@ -38,11 +38,10 @@ GID=1000
 ```
 
 2. **Utworzenie katalogu dla projektów Node.js**:
-   Wejdź do katalogu domowego a następnie utwórz katalog z przeznaczeniem na projekty Node.js. Katalog ten jest montowany przez większość kontenerów jako wolumen, co umożliwia wykorzystanie jego zawartości na obu poziomach: lokalnej maszyny (np. celem edycji), oraz kontenera (np. celem uruchomienia) 
+   Wejdź do katalogu domowego a następnie utwórz katalog z przeznaczeniem na projekty Node.js. Katalog ten jest montowany przez większość kontenerów jako wolumen, co umożliwia wykorzystanie jego zawartości na obu poziomach: hosta (np. celem edycji), oraz kontenera (np. celem uruchomienia) 
 
 ```bash
-cd ~
-mkdir -p Node/projects
+mkdir -p ~/Docker/Node/projects
 ```
 
 3. **Uruchomienie usługi**:
