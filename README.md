@@ -31,19 +31,28 @@ Struktura opiera się na plikach `compose.yml` podzielonych na moduły tematyczn
 
 1. **Konfiguracja zmiennych**:
    Upewnij się, że pliki `.env` w folderach projektów (np. `Docker/config/redis/`) zawierają Twój identyfikator użytkownika:
+
 ```env
 UID=1000
 GID=1000
 ```
 
-2. **Uruchomienie usługi**:
+2. **Utworzenie katalogu dla projektów Node.js**:
+   Wejdź do katalogu domowego a następnie utwórz katalog z przeznaczeniem na projekty Node.js. Katalog ten jest montowany przez większość kontenerów jako wolumen, co umożliwia wykorzystanie jego zawartości na obu poziomach: lokalnej maszyny (np. celem edycji), oraz kontenera (np. celem uruchomienia) 
+
+```bash
+cd ~
+mkdir -p Node/projects
+```
+
+3. **Uruchomienie usługi**:
    Wejdź do katalogu z wybraną konfiguracją i uruchom:
 
 ```bash
 docker-compose up -d
 ```
 
-3. **Porty Usług**:
+4. **Porty Usług**:
 
 - Elasticsearch: 9200 
 - Kibana: 5601 
